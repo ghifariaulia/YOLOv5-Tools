@@ -1,9 +1,17 @@
-train: ../crowdhuman/images/train2017/
-val: ../crowdhuman/images/train2017/
+# just match whatever your directory is
+# colab
+train: /content/crowdhuman-416x416/images/train/
+val: /content/crowdhuman-416x416/images/val/
+#test: test.txt
+# kaggle
+train: /kaggle/working/crowdhuman-416x416/images/train/
+val: /kaggle/working/crowdhuman-416x416/images/val/
 #test: test.txt
 
 #number of classes
 nc: 2
 
 # class names
-names: ['person', 'head']
+names:
+  0: head
+  1: person

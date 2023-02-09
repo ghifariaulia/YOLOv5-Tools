@@ -34,14 +34,26 @@ echo "** Download dataset files"
 
 # unzip image files (ignore CrowdHuman_test.zip for now)
 echo "** Unzip dataset files"
-for f in CrowdHuman_train01.zip CrowdHuman_train02.zip CrowdHuman_train03.zip CrowdHuman_val.zip ; do
-  unzip -n ${f}
+mkdir train/
+for f in CrowdHuman_train01.zip CrowdHuman_train02.zip CrowdHuman_train03.zip ; do
+  unzip -n ${f} -d train/
 done
 
-echo "** Create the crowdhuman-$1/ subdirectory"
+mkdir val/
+for f in CrowdHuman_val.zip ; do
+  unzip -n ${f} -d val/
+done
+
+echo "** Create the crowdhuman-$1/ directory and subdirectory"
 rm -rf ../crowdhuman-$1/
 mkdir ../crowdhuman-$1/
-ln Images/*.jpg ../crowdhuman-$1/
+mkdir ../crowdhuman-$1/images/
+mkdir ../crowdhuman-$1/images/train/
+mkdir ../crowdhuman-$1/images/val/
+echo "** Copy train images to crowdhuman-$1/"
+ln train/Images/*.jpg ../crowdhuman-$1/images/train/
+echo "** Copy val images to crowdhuman-$1/"
+ln val/Images/*.jpg ../crowdhuman-$1/images/val/
 
 # the crowdhuman/ subdirectory now contains all train/val jpg images
 

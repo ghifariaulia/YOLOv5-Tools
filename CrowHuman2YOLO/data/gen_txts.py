@@ -1,4 +1,5 @@
-"""gen_txts.py
+"""
+gen_txts.py
 
 To generate YOLO txt files from the original CrowdHuman annotations.
 Please also refer to README.md in this directory.
@@ -9,19 +10,20 @@ Inputs:
     * crowdhuman-{width}x{height}/[IDs].jpg
 
 Outputs:
-    * crowdhuman-{width}x{height}train.txt
-    * crowdhuman-{width}x{height}/test.txt
-    * crowdhuman-{width}x{height}/[IDs].txt (one annotation for each image in the training or test set)
+    * inside crowdhuman-{width}x{height} folder:
+        - labels/train
+        - labels/val
+        - images/train
+        - images/val
 """
 
 
 import json
 from pathlib import Path
 from argparse import ArgumentParser
-
+import os
 import numpy as np
 import cv2
-
 
 # input image width/height of the yolov4 model, set by command-line argument
 INPUT_WIDTH  = 0
@@ -37,6 +39,11 @@ DO_KMEANS = True
 KMEANS_CLUSTERS = 9
 BBOX_WHS = []  # keep track of bbox width/height with respect to 608x608
 
+def make_dir_ignore(path):
+    try:
+        os.makedirs(path)
+    except:
+        print("")
 
 def image_shape(ID, image_dir):
     assert image_dir is not None
@@ -67,21 +74,22 @@ def txt_line(cls, bbox, img_w, img_h):
         nh = float(h) / img_h
         return '%d %.6f %.6f %.6f %.6f\n' % (cls, cx, cy, nw, nh)
 
-
-def process(set_='test', annotation_filename='raw/annotation_val.odgt',
+def process(set_='val', annotation_filename='raw/annotation_val.odgt',
             output_dir=None):
     """Process either 'train' or 'test' set."""
     assert output_dir is not None
     output_dir.mkdir(exist_ok=True)
     jpgs = []
+    make_dir_ignore(output_dir / "labels" / set_)
+
     with open(annotation_filename, 'r') as fanno:
         for raw_anno in fanno.readlines():
             anno = json.loads(raw_anno)
             ID = anno['ID']  # e.g. '273271,c9db000d5146c15'
             print('Processing ID: %s' % ID)
-            img_h, img_w, img_c = image_shape(ID, output_dir)
+            img_h, img_w, img_c = image_shape(ID, output_dir / Path("images") / Path(set_))
             assert img_c == 3  # should be a BGR image
-            txt_path = output_dir / ('%s.txt' % ID)
+            txt_path = output_dir / "labels" / set_ / ('%s.txt' % ID)
             # write a txt for each image
             with open(txt_path.as_posix(), 'w') as ftxt:
                 for obj in anno['gtboxes']:
@@ -96,7 +104,7 @@ def process(set_='test', annotation_filename='raw/annotation_val.odgt',
                         line = txt_line(1, obj['fbox'], img_w, img_h)
                         if line:
                             ftxt.write(line)
-            jpgs.append('data/%s/%s.jpg' % (output_dir, ID))
+            jpgs.append('%s/%s.jpg' % (output_dir / Path("images") / Path(set_), ID))
     # write the 'data/crowdhuman/train.txt' or 'data/crowdhuman/test.txt'
     set_path = output_dir / ('%s.txt' % set_)
     with open(set_path.as_posix(), 'w') as fset:
@@ -130,13 +138,13 @@ def main():
         raise SystemExit('ERROR: %s does not exist.' % output_dir.as_posix())
 
     rm_txts(output_dir)
-    process('test', 'raw/annotation_val.odgt', output_dir)
+    process('val', 'raw/annotation_val.odgt', output_dir)
     process('train', 'raw/annotation_train.odgt', output_dir)
 
     with open('crowdhuman-%s.data' % args.dim, 'w') as f:
         f.write("""classes = 2
 train   = data/crowdhuman-%s/train.txt
-valid   = data/crowdhuman-%s/test.txt
+val   = data/crowdhuman-%s/val.txt
 names   = data/crowdhuman.names
 backup  = backup/\n""" % (args.dim, args.dim))
 
