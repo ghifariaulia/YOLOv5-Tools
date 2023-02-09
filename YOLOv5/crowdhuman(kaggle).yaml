@@ -4,8 +4,8 @@
 # val: /content/crowdhuman-416x416/images/val/
 #test: test.txt
 # kaggle
-train: /kaggle/working/crowdhuman-416x416/images/train/
-val: /kaggle/working/crowdhuman-416x416/images/val/
+train: /kaggle/working/crowdhuman-608x608/images/train/
+val: /kaggle/working/crowdhuman-608x608/images/val/
 #test: test.txt
 
 #number of classes
