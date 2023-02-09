@@ -38,9 +38,9 @@ mkdir train/
 # for f in CrowdHuman_train01.zip CrowdHuman_train02.zip CrowdHuman_train03.zip ; do
 #   unzip -n ${f} -d train/
 # done
-cp CrowdHuman_train01/Images/*.jpg train/
-cp CrowdHuman_train02/Images/*.jpg train/
-cp CrowdHuman_train03/Images/*.jpg train/
+mv CrowdHuman_train01/Images/*.jpg train/
+mv CrowdHuman_train02/Images/*.jpg train/
+mv CrowdHuman_train03/Images/*.jpg train/
 
 mkdir val/
 # for f in CrowdHuman_val.zip ; do
@@ -55,9 +55,9 @@ mkdir ../crowdhuman-$1/images/
 mkdir ../crowdhuman-$1/images/train/
 mkdir ../crowdhuman-$1/images/val/
 echo "** Copy train images to crowdhuman-$1/"
-ln train/*.jpg ../crowdhuman-$1/images/train/
+mv train/*.jpg ../crowdhuman-$1/images/train/
 echo "** Copy val images to crowdhuman-$1/"
-ln val/*.jpg ../crowdhuman-$1/images/val/
+mv val/*.jpg ../crowdhuman-$1/images/val/
 
 # the crowdhuman/ subdirectory now contains all train/val jpg images
 
