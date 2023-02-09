@@ -38,7 +38,9 @@ mkdir train/
 # for f in CrowdHuman_train01.zip CrowdHuman_train02.zip CrowdHuman_train03.zip ; do
 #   unzip -n ${f} -d train/
 # done
-cp CrowdHuman_train*/images/*.jpg train/
+cp CrowdHuman_train01/images/*.jpg train/
+cp CrowdHuman_train02/images/*.jpg train/
+cp CrowdHuman_train03/images/*.jpg train/
 
 mkdir val/
 # for f in CrowdHuman_val.zip ; do
