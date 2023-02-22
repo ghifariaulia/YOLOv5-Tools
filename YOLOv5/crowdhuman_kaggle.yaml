@@ -12,6 +12,4 @@ val: /kaggle/working/crowdhuman-640x640/images/val/
 nc: 2
 
 # class names
-names:
-  0: head
-  1: person
+names: ['head', 'person']
